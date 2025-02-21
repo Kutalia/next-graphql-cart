@@ -1,16 +1,19 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-import { apolloClient } from './app/providers/apollo'
-import { gql } from '@apollo/client';
+import { apolloClient } from './providers/apollo'
+import { gql } from './__generated__'
 
-const REGISTER_VISITOR = gql`
+const REGISTER_VISITOR = gql(`
 mutation RegisterVisitor {
     register {
       token
+      isActive
+      createdAt
+      updatedAt
     }
   }
-`
+`)
 
 export async function middleware(request: NextRequest) {
   // Creating session cookie if there's no visitor token used for authentication
