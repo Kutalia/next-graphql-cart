@@ -14,9 +14,11 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 type Documents = {
+    "\n  query GetCart {\n    getProducts {\n      products {\n        _id\n        title\n        cost\n        availableQuantity\n        isArchived\n        createdAt\n        updatedAt\n      }\n    }\n  }\n": typeof types.GetCartDocument,
     "\nmutation RegisterVisitor {\n    register {\n      token\n      isActive\n    }\n  }\n": typeof types.RegisterVisitorDocument,
 };
 const documents: Documents = {
+    "\n  query GetCart {\n    getProducts {\n      products {\n        _id\n        title\n        cost\n        availableQuantity\n        isArchived\n        createdAt\n        updatedAt\n      }\n    }\n  }\n": types.GetCartDocument,
     "\nmutation RegisterVisitor {\n    register {\n      token\n      isActive\n    }\n  }\n": types.RegisterVisitorDocument,
 };
 
@@ -34,6 +36,10 @@ const documents: Documents = {
  */
 export function gql(source: string): unknown;
 
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query GetCart {\n    getProducts {\n      products {\n        _id\n        title\n        cost\n        availableQuantity\n        isArchived\n        createdAt\n        updatedAt\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetCart {\n    getProducts {\n      products {\n        _id\n        title\n        cost\n        availableQuantity\n        isArchived\n        createdAt\n        updatedAt\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
