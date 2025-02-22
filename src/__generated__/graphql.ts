@@ -124,7 +124,7 @@ export type Visitor = {
 export type RegisterVisitorMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type RegisterVisitorMutation = { __typename?: 'Mutation', register: { __typename?: 'Visitor', token: string, isActive: boolean, createdAt: string, updatedAt: string } };
+export type RegisterVisitorMutation = { __typename?: 'Mutation', register: { __typename?: 'Visitor', token: string, isActive: boolean } };
 
 
-export const RegisterVisitorDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RegisterVisitor"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"register"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"token"}},{"kind":"Field","name":{"kind":"Name","value":"isActive"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<RegisterVisitorMutation, RegisterVisitorMutationVariables>;
+export const RegisterVisitorDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RegisterVisitor"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"register"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"token"}},{"kind":"Field","name":{"kind":"Name","value":"isActive"}}]}}]}}]} as unknown as DocumentNode<RegisterVisitorMutation, RegisterVisitorMutationVariables>;

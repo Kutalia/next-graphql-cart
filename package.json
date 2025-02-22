@@ -9,7 +9,6 @@
     "lint": "next lint",
     "build-graphql": "graphql-codegen",
     "watch-graphql": "graphql-codegen -w"
-
   },
   "dependencies": {
     "@apollo/client": "^3.13.1",
