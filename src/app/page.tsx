@@ -1,42 +1,10 @@
 "use client"
 
-import { gql } from "@/__generated__";
 import { ProductsTable } from "@/components/products-table";
 import { SkeletonTable } from "@/components/skeleton-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { CART_ITEM_SUBSCRIPTION, GET_PRODUCTS } from "@/queries";
 import { useQuery, useSubscription } from "@apollo/client";
-
-const GET_PRODUCTS = gql(`
-  query GetCart {
-    getProducts {
-      products {
-        _id
-        title
-        cost
-        availableQuantity
-        isArchived
-        createdAt
-        updatedAt
-      }
-    }
-  }
-`)
-
-const CART_ITEM_SUBSCRIPTION = gql(`
-  subscription OnCartItemUpdate {
-    cartItemUpdate {
-      event
-      payload {
-        _id
-        cartId
-        product {
-            _id
-        }
-        quantity
-      }
-    }
-  }
-`)
 
 export default function Home() {
   const { loading: productsLoading, data: productsData } = useQuery(GET_PRODUCTS);

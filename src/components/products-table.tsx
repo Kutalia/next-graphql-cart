@@ -33,13 +33,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-
-type Product = {
-  _id: string
-  title: string
-  cost: number
-  availableQuantity: number
-}
+import { ModifyCartDialog } from "./modify-cart-dialog"
+import { Product } from "@/types"
 
 export const columns: ColumnDef<Product>[] = [
   {
@@ -97,11 +92,12 @@ export const columns: ColumnDef<Product>[] = [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
               onClick={() => navigator.clipboard.writeText(product._id)}
+              className="cursor-pointer"
             >
               Copy product ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Add to cart</DropdownMenuItem>
+            <DropdownMenuItem asChild><ModifyCartDialog product={product} /></DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
@@ -109,7 +105,7 @@ export const columns: ColumnDef<Product>[] = [
   },
 ]
 
-type Props = {
+interface Props {
   data: Product[]
 }
 
