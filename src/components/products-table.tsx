@@ -73,6 +73,13 @@ export const columns: ColumnDef<Product>[] = [
     },
   },
   {
+    accessorKey: "availableQuantity",
+    header: () => <div className="text-right">In Stock</div>,
+    cell: ({ row }) => {
+      return <div className="text-right font-medium">{row.getValue("availableQuantity")}</div>
+    },
+  },
+  {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
@@ -94,8 +101,7 @@ export const columns: ColumnDef<Product>[] = [
               Copy product ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View product details</DropdownMenuItem>
+            <DropdownMenuItem>Add to cart</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )

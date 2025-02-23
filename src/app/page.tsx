@@ -39,10 +39,9 @@ const CART_ITEM_SUBSCRIPTION = gql(`
 `)
 
 export default function Home() {
-  const { loading: productsLoading, error: productsError, data: productsData } = useQuery(GET_PRODUCTS);
+  const { loading: productsLoading, data: productsData } = useQuery(GET_PRODUCTS);
   const { data: subscriptionData, loading: subscriptionLoading } = useSubscription(CART_ITEM_SUBSCRIPTION)
 
-  console.log({ productsLoading, productsError, productsData })
   console.log({ subscriptionData, subscriptionLoading })
 
   return (
