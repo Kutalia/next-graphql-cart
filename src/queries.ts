@@ -16,6 +16,32 @@ export const GET_PRODUCTS = gql(`
   }
 `)
 
+export const GET_CART = gql(`
+  query GetCart {
+    getCart {
+      _id
+      items {
+        _id
+        cartId
+        product {
+          _id
+          title
+          cost
+          availableQuantity
+          isArchived
+          createdAt
+          updatedAt
+        }
+        quantity
+        updatedAt
+        addedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`)
+
 export const CART_ITEM_SUBSCRIPTION = gql(`
   subscription OnCartItemUpdate {
     cartItemUpdate {
@@ -24,9 +50,17 @@ export const CART_ITEM_SUBSCRIPTION = gql(`
         _id
         cartId
         product {
-            _id
+          _id
+          title
+          cost
+          availableQuantity
+          isArchived
+          createdAt
+          updatedAt
         }
         quantity
+        addedAt
+        updatedAt
       }
     }
   }
