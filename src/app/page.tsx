@@ -1,7 +1,7 @@
 "use client"
 
 import { gql } from "@/__generated__";
-import { useQuery } from "@apollo/client";
+import { useQuery, useSubscription } from "@apollo/client";
 
 const GET_PRODUCTS = gql(`
   query GetCart {
@@ -19,10 +19,28 @@ const GET_PRODUCTS = gql(`
   }
 `)
 
-export default function Home() {
-  const { loading, error, data } = useQuery(GET_PRODUCTS);
+const CART_ITEM_SUBSCRIPTION = gql(`
+  subscription OnCartItemUpdate {
+    cartItemUpdate {
+      event
+      payload {
+        _id
+        cartId
+        product {
+            _id
+        }
+        quantity
+      }
+    }
+  }
+`)
 
-  console.log(loading, error, data)
+export default function Home() {
+  const { loading: productsLoading, error: productsError, data: productsData } = useQuery(GET_PRODUCTS);
+  const { data: subscriptionData, loading: subscriptionLoading } = useSubscription(CART_ITEM_SUBSCRIPTION)
+
+  console.log({ productsLoading, productsError, productsData })
+  console.log({ subscriptionData, subscriptionLoading })
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">

@@ -15,10 +15,12 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 type Documents = {
     "\n  query GetCart {\n    getProducts {\n      products {\n        _id\n        title\n        cost\n        availableQuantity\n        isArchived\n        createdAt\n        updatedAt\n      }\n    }\n  }\n": typeof types.GetCartDocument,
+    "\n  subscription OnCartItemUpdate {\n    cartItemUpdate {\n      event\n      payload {\n        _id\n        cartId\n        product {\n            _id\n        }\n        quantity\n      }\n    }\n  }\n": typeof types.OnCartItemUpdateDocument,
     "\nmutation RegisterVisitor {\n    register {\n      token\n      isActive\n    }\n  }\n": typeof types.RegisterVisitorDocument,
 };
 const documents: Documents = {
     "\n  query GetCart {\n    getProducts {\n      products {\n        _id\n        title\n        cost\n        availableQuantity\n        isArchived\n        createdAt\n        updatedAt\n      }\n    }\n  }\n": types.GetCartDocument,
+    "\n  subscription OnCartItemUpdate {\n    cartItemUpdate {\n      event\n      payload {\n        _id\n        cartId\n        product {\n            _id\n        }\n        quantity\n      }\n    }\n  }\n": types.OnCartItemUpdateDocument,
     "\nmutation RegisterVisitor {\n    register {\n      token\n      isActive\n    }\n  }\n": types.RegisterVisitorDocument,
 };
 
@@ -40,6 +42,10 @@ export function gql(source: string): unknown;
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query GetCart {\n    getProducts {\n      products {\n        _id\n        title\n        cost\n        availableQuantity\n        isArchived\n        createdAt\n        updatedAt\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetCart {\n    getProducts {\n      products {\n        _id\n        title\n        cost\n        availableQuantity\n        isArchived\n        createdAt\n        updatedAt\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  subscription OnCartItemUpdate {\n    cartItemUpdate {\n      event\n      payload {\n        _id\n        cartId\n        product {\n            _id\n        }\n        quantity\n      }\n    }\n  }\n"): (typeof documents)["\n  subscription OnCartItemUpdate {\n    cartItemUpdate {\n      event\n      payload {\n        _id\n        cartId\n        product {\n            _id\n        }\n        quantity\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

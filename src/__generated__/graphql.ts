@@ -126,6 +126,11 @@ export type GetCartQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetCartQuery = { __typename?: 'Query', getProducts: { __typename?: 'GetProductsData', products: Array<{ __typename?: 'Product', _id: string, title: string, cost: number, availableQuantity: number, isArchived: boolean, createdAt: string, updatedAt: string }> } };
 
+export type OnCartItemUpdateSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type OnCartItemUpdateSubscription = { __typename?: 'Subscription', cartItemUpdate: { __typename?: 'CartItemMessage', event: CartItemEvent, payload: { __typename?: 'CartItem', _id: string, cartId: string, quantity: number, product: { __typename?: 'Product', _id: string } } } };
+
 export type RegisterVisitorMutationVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -133,4 +138,5 @@ export type RegisterVisitorMutation = { __typename?: 'Mutation', register: { __t
 
 
 export const GetCartDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetCart"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getProducts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"products"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"cost"}},{"kind":"Field","name":{"kind":"Name","value":"availableQuantity"}},{"kind":"Field","name":{"kind":"Name","value":"isArchived"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]}}]} as unknown as DocumentNode<GetCartQuery, GetCartQueryVariables>;
+export const OnCartItemUpdateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"OnCartItemUpdate"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cartItemUpdate"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"event"}},{"kind":"Field","name":{"kind":"Name","value":"payload"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"cartId"}},{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"quantity"}}]}}]}}]}}]} as unknown as DocumentNode<OnCartItemUpdateSubscription, OnCartItemUpdateSubscriptionVariables>;
 export const RegisterVisitorDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RegisterVisitor"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"register"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"token"}},{"kind":"Field","name":{"kind":"Name","value":"isActive"}}]}}]}}]} as unknown as DocumentNode<RegisterVisitorMutation, RegisterVisitorMutationVariables>;
