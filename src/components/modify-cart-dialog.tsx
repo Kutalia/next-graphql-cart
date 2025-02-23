@@ -15,16 +15,16 @@ import { Label } from "@/components/ui/label"
 import { GET_PRODUCTS } from "@/queries"
 import { Product } from "@/types"
 import { useQuery } from "@apollo/client"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { NumberInput } from "./number-input"
 import { cartAddItemSchema } from "@/lib/zod-schemas"
 
 interface Props {
-  product: Product
+  productId: string
   isCartEdit?: boolean
 }
 
-export function ModifyCartDialog({ product, isCartEdit }: Props) {
+export function ModifyCartDialog({ productId, isCartEdit }: Props) {
   const [quantity, setQuantity] = useState(1)
   const [isOpen, setIsOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -37,10 +37,22 @@ export function ModifyCartDialog({ product, isCartEdit }: Props) {
 
   useEffect(() => {
     if (!isCartEdit) {
-      const output = cartAddItemSchema.safeParse({ productId: product._id, quantity })
+      const output = cartAddItemSchema.safeParse({ productId: productId, quantity })
       setError(!output.success)
     }
-  }, [quantity, product._id, isCartEdit])
+  }, [quantity, productId, isCartEdit])
+
+  const product = useMemo(() => {
+    if (!productsData?.getProducts?.products) {
+      return null
+    }
+
+    return productsData.getProducts.products.find(({ _id }) => _id === productId)
+  }, [productsData, productId])
+
+  if (!product) {
+    return null
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -62,6 +74,7 @@ export function ModifyCartDialog({ product, isCartEdit }: Props) {
             <NumberInput
               id="quantity"
               min={1}
+              max={product.availableQuantity}
               value={quantity}
               ref={inputRef}
               onValueChange={(val) => setQuantity(val || 0)}

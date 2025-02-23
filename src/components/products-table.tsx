@@ -97,7 +97,7 @@ export const columns: ColumnDef<Product>[] = [
               Copy product ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild><ModifyCartDialog product={product} /></DropdownMenuItem>
+            <DropdownMenuItem asChild><ModifyCartDialog productId={product._id} /></DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
