@@ -2,22 +2,13 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 
-import { gql } from './__generated__'
 import { BACKEND_URL } from './constants';
+import { REGISTER_VISITOR } from './queries';
 
 const apolloBackendClient = new ApolloClient({
   uri: BACKEND_URL,
   cache: new InMemoryCache(),
 });
-
-const REGISTER_VISITOR = gql(`
-mutation RegisterVisitor {
-    register {
-      token
-      isActive
-    }
-  }
-`)
 
 export async function middleware(request: NextRequest) {
   // Creating session cookie if there's no visitor token used for authentication

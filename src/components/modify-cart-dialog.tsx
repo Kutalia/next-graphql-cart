@@ -12,9 +12,9 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { GET_PRODUCTS } from "@/queries"
+import { ADD_ITEM, GET_PRODUCTS } from "@/queries"
 import { Product } from "@/types"
-import { useQuery } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { NumberInput } from "./number-input"
 import { cartAddItemSchema } from "@/lib/zod-schemas"
@@ -34,6 +34,14 @@ export function ModifyCartDialog({ productId, isCartEdit }: Props) {
   const { data: productsData } = useQuery(GET_PRODUCTS, {
     fetchPolicy: 'cache-only',
   });
+
+  const [addItem, { loading: addItemLoading, error: addItemError, data: addItemData }] = useMutation(ADD_ITEM, {
+    variables: { addItemArgs: { productId, quantity } },
+    onCompleted: (data) => {
+      console.log('ADD_ITEM_DATA', data)
+      setIsOpen(false)
+    }
+  })
 
   useEffect(() => {
     if (!isCartEdit) {
@@ -83,7 +91,7 @@ export function ModifyCartDialog({ productId, isCartEdit }: Props) {
           {error && <p className="text-sm text-red-500">Can't save changes. Check item quantity</p>}
         </div>
         <DialogFooter>
-          <Button type="submit" disabled={error}>Save changes</Button>
+          <Button onClick={() => addItem()} disabled={error}>Save changes</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

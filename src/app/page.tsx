@@ -10,7 +10,9 @@ export default function Home() {
   const { loading: productsLoading, data: productsData } = useQuery(GET_PRODUCTS);
   const { data: subscriptionData, loading: subscriptionLoading } = useSubscription(CART_ITEM_SUBSCRIPTION)
 
-  console.log({ subscriptionData, subscriptionLoading })
+  if (subscriptionData) {
+    console.log('SUBSCRIPTION_DATA', subscriptionData)
+  }
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
