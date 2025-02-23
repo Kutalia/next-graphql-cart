@@ -2,6 +2,8 @@
 
 import { gql } from "@/__generated__";
 import { ProductsTable } from "@/components/products-table";
+import { SkeletonTable } from "@/components/skeleton-table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useQuery, useSubscription } from "@apollo/client";
 
 const GET_PRODUCTS = gql(`
@@ -57,7 +59,23 @@ export default function Home() {
           <li>Save and see your changes instantly.</li>
         </ol>
 
-        { productsData?.getProducts?.products?.length && <ProductsTable data={productsData?.getProducts?.products} /> }
+        {
+          productsLoading || !productsData?.getProducts?.products
+            ? <SkeletonTable />
+            : <Tabs defaultValue="products">
+              <TabsList>
+                <TabsTrigger value="products">All Products</TabsTrigger>
+                <TabsTrigger value="cart">Cart</TabsTrigger>
+              </TabsList>
+              <TabsContent value="products">
+                <ProductsTable data={productsData?.getProducts?.products} />
+              </TabsContent>
+              <TabsContent value="cart">
+                <ProductsTable data={productsData?.getProducts?.products} />
+              </TabsContent>
+            </Tabs>
+        }
+
       </main>
       <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
         Made by Kote Kutalia &#169; {(new Date()).getFullYear()}
