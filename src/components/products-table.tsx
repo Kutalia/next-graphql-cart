@@ -34,9 +34,12 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { ModifyCartDialog } from "./modify-cart-dialog"
-import { Product } from "@/types"
+import { TableProduct } from "@/types"
+import { useQuery } from "@apollo/client"
+import { GET_CART, GET_PRODUCTS } from "@/queries"
+import { useMemo } from "react"
 
-export const columns: ColumnDef<Product>[] = [
+export const columns: ColumnDef<TableProduct>[] = [
   {
     accessorKey: "title",
     header: ({ column }) => {
@@ -75,6 +78,13 @@ export const columns: ColumnDef<Product>[] = [
     },
   },
   {
+    accessorKey: "quantity",
+    header: () => <div className="text-right">In Cart</div>,
+    cell: ({ row }) => {
+      return <div className="text-right font-medium">{row.getValue("quantity")}</div>
+    },
+  },
+  {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
@@ -91,13 +101,13 @@ export const columns: ColumnDef<Product>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(product._id)}
+              onClick={() => navigator.clipboard.writeText(product.productId)}
               className="cursor-pointer"
             >
               Copy product ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild><ModifyCartDialog productId={product._id} /></DropdownMenuItem>
+            <DropdownMenuItem asChild><ModifyCartDialog product={product} /></DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
@@ -105,17 +115,43 @@ export const columns: ColumnDef<Product>[] = [
   },
 ]
 
-interface Props {
-  data: Product[]
-}
-
-export function ProductsTable({ data }: Props) {
+export function ProductsTable() {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   )
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
+
+  // Using apollo as a state management tool in this case, given that products should be already fetched
+  const { loading: productsLoading, data: productsData } = useQuery(GET_PRODUCTS, {
+    fetchPolicy: 'cache-only',
+  });
+
+  // Gets automatically updated after item add/edit mutations, no manual cache management needed
+  const { data: cartData } = useQuery(GET_CART, {
+    fetchPolicy: 'cache-only',
+  });
+
+  const data = useMemo(() => {
+    const products = productsData?.getProducts?.products
+    const cartItems = cartData?.getCart?.items
+
+    let mergedData: Array<TableProduct> = []
+
+    if (!products) {
+      return mergedData
+    }
+
+    mergedData = products.map(({ _id: productId, title, cost, availableQuantity }) => ({ productId, title, cost, availableQuantity }))
+
+    cartItems?.forEach(({ _id: cartItemId, quantity, product: { _id: productId } }) => {
+      const index = products.findIndex(({ _id }) => _id === productId)
+      mergedData[index] = { ...mergedData[index], quantity, cartItemId }
+    })
+
+    return mergedData
+  }, [productsData, cartData])
 
   const table = useReactTable({
     data,

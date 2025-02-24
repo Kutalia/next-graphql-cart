@@ -110,10 +110,10 @@ export default function Home() {
                 <TabsTrigger value="cart">Cart</TabsTrigger>
               </TabsList>
               <TabsContent value="products">
-                <ProductsTable data={productsData?.getProducts?.products} />
+                <ProductsTable />
               </TabsContent>
               <TabsContent value="cart">
-                <ProductsTable data={productsData?.getProducts?.products} />
+                <ProductsTable />
               </TabsContent>
             </Tabs>
         }

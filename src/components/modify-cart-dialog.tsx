@@ -11,43 +11,27 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
-import { cartAddItemSchema } from "@/lib/zod-schemas"
-import { ADD_ITEM, GET_CART, GET_PRODUCTS, UPDATE_ITEM_QUANTITY } from "@/queries"
-import { useMutation, useQuery } from "@apollo/client"
-import { useEffect, useMemo, useRef, useState } from "react"
-import { NumberInput } from "./number-input"
+import { cartAddItemSchema, cartUpdateItemQuantitySchema } from "@/lib/zod-schemas"
+import { ADD_ITEM, UPDATE_ITEM_QUANTITY } from "@/queries"
+import { TableProduct } from "@/types"
+import { useMutation } from "@apollo/client"
+import { useEffect, useRef, useState } from "react"
 import { toast } from "sonner"
+import { NumberInput } from "./number-input"
 
 interface Props {
-  productId: string
+  product: TableProduct
+  cartItemId?: string | undefined
 }
 
-export function ModifyCartDialog({ productId }: Props) {
-  const [quantity, setQuantity] = useState(1)
+export function ModifyCartDialog({ product }: Props) {
+  const [quantity, setQuantity] = useState(product.quantity || 1)
   const [isOpen, setIsOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const [error, setError] = useState(false)
 
-  // Using apollo as a state management tool in this case, given that products should be already fetched
-  const { data: productsData } = useQuery(GET_PRODUCTS, {
-    fetchPolicy: 'cache-only',
-  });
-
-  // Gets automatically updated after item add/edit mutations, no manual cache management needed
-  const { data: cartData } = useQuery(GET_CART, {
-    fetchPolicy: 'cache-only',
-  });
-
-  const cartItemId = useMemo(() => {
-    if (!cartData?.getCart?.items) {
-      return
-    }
-
-    return cartData.getCart.items.find(({ product }) => product._id === productId)?._id
-  }, [cartData, productId])
-
-  const [addItem, { loading: addItemLoading, error: addItemError, data: addItemData }] = useMutation(ADD_ITEM, {
-    variables: { addItemArgs: { productId, quantity } },
+  const [addItem] = useMutation(ADD_ITEM, {
+    variables: { addItemArgs: { productId: product.productId, quantity } },
     onCompleted: (data) => {
       console.log('ADD_ITEM_DATA', data)
       setIsOpen(false)
@@ -61,8 +45,8 @@ export function ModifyCartDialog({ productId }: Props) {
     }
   })
 
-  const [updateItem, { loading: updateItemLoading, error: updateItemError, data: updateItemData }] = useMutation(UPDATE_ITEM_QUANTITY, {
-    variables: { updateItemQuantityArgs: { cartItemId: cartItemId as string, quantity } },
+  const [updateItem] = useMutation(UPDATE_ITEM_QUANTITY, {
+    variables: { updateItemQuantityArgs: { cartItemId: product.cartItemId as string, quantity } },
     onCompleted: (data) => {
       console.log('UPDATE_ITEM_QUANTITY_DATA', data)
       setIsOpen(false)
@@ -77,19 +61,14 @@ export function ModifyCartDialog({ productId }: Props) {
   })
 
   useEffect(() => {
-    if (!cartItemId) {
-      const output = cartAddItemSchema.safeParse({ productId: productId, quantity })
+    if (!product.cartItemId) {
+      const output = cartAddItemSchema.safeParse({ productId: product.productId, quantity })
+      setError(!output.success)
+    } else {
+      const output = cartUpdateItemQuantitySchema.safeParse({ cartItemId: product.cartItemId, quantity })
       setError(!output.success)
     }
-  }, [quantity, productId, cartItemId])
-
-  const product = useMemo(() => {
-    if (!productsData?.getProducts?.products) {
-      return null
-    }
-
-    return productsData.getProducts.products.find(({ _id }) => _id === productId)
-  }, [productsData, productId])
+  }, [quantity, product])
 
   if (!product || !product.availableQuantity) {
     return null
@@ -98,11 +77,11 @@ export function ModifyCartDialog({ productId }: Props) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger className="relative flex select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&>svg]:size-4 [&>svg]:shrink-0 w-full">
-        {!cartItemId ? 'Add to cart' : 'Edit cart quantity'}
+        {!product.cartItemId ? 'Add to cart' : 'Edit cart quantity'}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{cartItemId ? 'Edit product in cart' : 'Add product to cart'}</DialogTitle>
+          <DialogTitle>{product.cartItemId ? 'Edit product in cart' : 'Add product to cart'}</DialogTitle>
           <DialogDescription>
             Make changes to the product quantity in your cart. Click save when you're done.
           </DialogDescription>
@@ -124,7 +103,7 @@ export function ModifyCartDialog({ productId }: Props) {
           {error && <p className="text-sm text-red-500">Can't save changes. Check item quantity</p>}
         </div>
         <DialogFooter>
-          <Button onClick={() => cartItemId ? updateItem() : addItem()} disabled={error}>Save changes</Button>
+          <Button onClick={() => product.cartItemId ? updateItem() : addItem()} disabled={error}>Save changes</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
