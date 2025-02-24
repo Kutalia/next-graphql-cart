@@ -137,10 +137,10 @@ export const columns: ColumnDef<TableProduct>[] = [
 ]
 
 interface Props {
-  showOnlyInCart?: boolean
+  sortByInCart?: boolean
 }
 
-export function ProductsTable({ showOnlyInCart }: Props) {
+export function ProductsTable({ sortByInCart }: Props) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -202,14 +202,12 @@ export function ProductsTable({ showOnlyInCart }: Props) {
   })
 
   useEffect(() => {
-    if (showOnlyInCart) {
-      table.getColumn('quantity')?.setFilterValue(() => {
-        return true
-      })
+    if (sortByInCart) {
+      table.getColumn('quantity')?.toggleSorting(table.getColumn('quantity')?.getIsSorted() === "asc")
     } else {
-      table.resetColumnFilters()
+      table.resetSorting()
     }
-  }, [showOnlyInCart])
+  }, [sortByInCart])
 
   return (
     <div className="w-full">

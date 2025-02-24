@@ -14,7 +14,7 @@ export default function Home() {
   const { loading: productsLoading, data: productsData } = useQuery(GET_PRODUCTS);
   const { loading: cartLoading, data: cartData } = useQuery(GET_CART)
 
-  const [showCart, setShowCart] = useState(false)
+  const [sortByCart, setSortByCart] = useState(false)
 
   const { data: subscriptionData } = useSubscription(CART_ITEM_SUBSCRIPTION, {
     onData: ({ data, client }) => {
@@ -108,11 +108,11 @@ export default function Home() {
             ? <SkeletonTable />
             : <Tabs defaultValue="products">
               <TabsList>
-                <TabsTrigger onClick={() => setShowCart(false)} value="products">All Products</TabsTrigger>
-                <TabsTrigger onClick={() => setShowCart(true)} value="cart">Cart</TabsTrigger>
+                <TabsTrigger onClick={() => setSortByCart(false)} value="products">All Products</TabsTrigger>
+                <TabsTrigger onClick={() => setSortByCart(true)} value="cart">Cart</TabsTrigger>
               </TabsList>
               <TabsContent forceMount value="products">
-                <ProductsTable showOnlyInCart={showCart} />
+                <ProductsTable sortByInCart={sortByCart} />
               </TabsContent>
             </Tabs>
         }
