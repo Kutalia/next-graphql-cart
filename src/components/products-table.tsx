@@ -40,6 +40,7 @@ import { GET_CART, GET_PRODUCTS, REMOVE_ITEM } from "@/queries"
 import { useEffect, useMemo } from "react"
 import { toast } from "sonner"
 import { parseError } from "@/lib/utils"
+import { cartRemoveItemSchema } from "@/lib/zod-schemas"
 
 export const columns: ColumnDef<TableProduct>[] = [
   {
@@ -106,6 +107,15 @@ export const columns: ColumnDef<TableProduct>[] = [
         }
       })
 
+      const handleRemoveItem = () => {
+        const output = cartRemoveItemSchema.safeParse({ cartItemId: row.original.cartItemId })
+        if (!output.success) {
+          toast('Incorrect cart id')
+        } else {
+          removeItem()
+        }
+      }
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -125,7 +135,7 @@ export const columns: ColumnDef<TableProduct>[] = [
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild><ModifyCartDialog product={product} /></DropdownMenuItem>
             {
-              product.cartItemId && <DropdownMenuItem onClick={() => removeItem()}>
+              product.cartItemId && <DropdownMenuItem onClick={handleRemoveItem}>
                 Remove from cart
               </DropdownMenuItem>
             }
