@@ -126,3 +126,29 @@ export const UPDATE_ITEM_QUANTITY = gql(`
     }
   }
 `)
+
+export const REMOVE_ITEM = gql(`
+  mutation RemoveItem($removeItemArgs: RemoveItemArgs!) {
+    removeItem(input: $removeItemArgs) {
+      _id
+      items {
+        _id
+        cartId
+        product {
+          _id
+          title
+          cost
+          availableQuantity
+          isArchived
+          createdAt
+          updatedAt
+        }
+        quantity
+        updatedAt
+        addedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`)

@@ -18,6 +18,7 @@ import { useMutation } from "@apollo/client"
 import { useEffect, useRef, useState } from "react"
 import { toast } from "sonner"
 import { NumberInput } from "./number-input"
+import { parseError } from "@/lib/utils"
 
 interface Props {
   product: TableProduct
@@ -38,10 +39,10 @@ export function ModifyCartDialog({ product }: Props) {
       toast('Product has been successfully added')
     },
     onError: (error) => {
-      try {
-        const errorMessage = JSON.parse(error.message)[0].message
+      const errorMessage = parseError(error)
+      if (errorMessage) {
         toast(errorMessage)
-      } catch (err) { }
+      }
     }
   })
 
@@ -53,10 +54,10 @@ export function ModifyCartDialog({ product }: Props) {
       toast('Cart item quantity has been successfully updated')
     },
     onError: (error) => {
-      try {
-        const errorMessage = JSON.parse(error.message)[0].message
+      const errorMessage = parseError(error)
+      if (errorMessage) {
         toast(errorMessage)
-      } catch (err) { }
+      }
     }
   })
 
