@@ -8,13 +8,15 @@ import { Toaster } from "@/components/ui/sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CART_ITEM_SUBSCRIPTION, GET_CART, GET_PRODUCTS } from "@/queries";
 import { useQuery, useSubscription } from "@apollo/client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const { loading: productsLoading, data: productsData } = useQuery(GET_PRODUCTS);
   const { loading: cartLoading, data: cartData } = useQuery(GET_CART)
 
-  const { data: subscriptionData, loading: subscriptionLoading } = useSubscription(CART_ITEM_SUBSCRIPTION, {
+  const [showCart, setShowCart] = useState(false)
+
+  const { data: subscriptionData } = useSubscription(CART_ITEM_SUBSCRIPTION, {
     onData: ({ data, client }) => {
       if (!data?.data?.cartItemUpdate) {
         return
@@ -102,18 +104,15 @@ export default function Home() {
         </ol>
 
         {
-          productsLoading || !productsData?.getProducts?.products
+          productsLoading || !productsData?.getProducts?.products || cartLoading
             ? <SkeletonTable />
             : <Tabs defaultValue="products">
               <TabsList>
-                <TabsTrigger value="products">All Products</TabsTrigger>
-                <TabsTrigger value="cart">Cart</TabsTrigger>
+                <TabsTrigger onClick={() => setShowCart(false)} value="products">All Products</TabsTrigger>
+                <TabsTrigger onClick={() => setShowCart(true)} value="cart">Cart</TabsTrigger>
               </TabsList>
-              <TabsContent value="products">
-                <ProductsTable />
-              </TabsContent>
-              <TabsContent value="cart">
-                <ProductsTable />
+              <TabsContent forceMount value="products">
+                <ProductsTable showOnlyInCart={showCart} />
               </TabsContent>
             </Tabs>
         }

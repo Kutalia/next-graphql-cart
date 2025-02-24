@@ -37,7 +37,7 @@ import { ModifyCartDialog } from "./modify-cart-dialog"
 import { TableProduct } from "@/types"
 import { useQuery } from "@apollo/client"
 import { GET_CART, GET_PRODUCTS } from "@/queries"
-import { useMemo } from "react"
+import { useEffect, useMemo } from "react"
 
 export const columns: ColumnDef<TableProduct>[] = [
   {
@@ -115,7 +115,11 @@ export const columns: ColumnDef<TableProduct>[] = [
   },
 ]
 
-export function ProductsTable() {
+interface Props {
+  showOnlyInCart?: boolean
+}
+
+export function ProductsTable({ showOnlyInCart }: Props) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -175,6 +179,16 @@ export function ProductsTable() {
       },
     }
   })
+  
+  useEffect(() => {
+    if (showOnlyInCart) {
+      table.getColumn('quantity')?.setFilterValue(() => {
+        return true
+      })
+    } else {
+      table.resetColumnFilters()
+    }
+  }, [showOnlyInCart])
 
   return (
     <div className="w-full">
