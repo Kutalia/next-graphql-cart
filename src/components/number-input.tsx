@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { forwardRef, useCallback, useEffect, useState } from 'react';
@@ -23,7 +23,7 @@ export interface NumberInputProps
 }
 
 export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
-  (
+  function ForwardedNumberInput(
     {
       stepper,
       thousandSeparator,
@@ -39,15 +39,17 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
       value: controlledValue,
       ...props
     },
-    ref
-  ) => {
+    ref,
+  ) {
     const [value, setValue] = useState<number | undefined>(
-      controlledValue ?? defaultValue
+      controlledValue ?? defaultValue,
     );
 
     const handleIncrement = useCallback(() => {
       setValue((prev) =>
-        prev === undefined ? stepper ?? 1 : Math.min(prev + (stepper ?? 1), max)
+        prev === undefined
+          ? (stepper ?? 1)
+          : Math.min(prev + (stepper ?? 1), max),
       );
     }, [stepper, max]);
 
@@ -55,7 +57,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
       setValue((prev) =>
         prev === undefined
           ? -(stepper ?? 1)
-          : Math.max(prev - (stepper ?? 1), min)
+          : Math.max(prev - (stepper ?? 1), min),
       );
     }, [stepper, min]);
 
@@ -64,7 +66,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
         if (
           ref &&
           document.activeElement ===
-          (ref as React.RefObject<HTMLInputElement>).current
+            (ref as React.RefObject<HTMLInputElement>).current
         ) {
           if (e.key === 'ArrowUp') {
             handleIncrement();
@@ -130,7 +132,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
           prefix={prefix}
           customInput={Input}
           placeholder={placeholder}
-          className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none rounded-r-none relative"
+          className="relative rounded-r-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           getInputRef={ref}
           {...props}
         />
@@ -138,7 +140,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
         <div className="flex flex-col">
           <Button
             aria-label="Increase value"
-            className="px-2 h-5 rounded-l-none rounded-br-none border-input border-l-0 border-b-[0.5px] focus-visible:relative"
+            className="h-5 rounded-l-none rounded-br-none border-b-[0.5px] border-l-0 border-input px-2 focus-visible:relative"
             variant="outline"
             onClick={handleIncrement}
             disabled={value === max}
@@ -147,7 +149,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
           </Button>
           <Button
             aria-label="Decrease value"
-            className="px-2 h-5 rounded-l-none rounded-tr-none border-input border-l-0 border-t-[0.5px] focus-visible:relative"
+            className="h-5 rounded-l-none rounded-tr-none border-l-0 border-t-[0.5px] border-input px-2 focus-visible:relative"
             variant="outline"
             onClick={handleDecrement}
             disabled={value === min}
@@ -157,5 +159,5 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
         </div>
       </div>
     );
-  }
+  },
 );

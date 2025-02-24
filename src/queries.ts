@@ -1,4 +1,4 @@
-import { gql } from "./__generated__"
+import { gql } from './__generated__';
 
 export const GET_PRODUCTS = gql(`
   query GetProducts {
@@ -14,7 +14,7 @@ export const GET_PRODUCTS = gql(`
       }
     }
   }
-`)
+`);
 
 export const GET_CART = gql(`
   query GetCart {
@@ -40,7 +40,7 @@ export const GET_CART = gql(`
       updatedAt
     }
   }
-`)
+`);
 
 export const CART_ITEM_SUBSCRIPTION = gql(`
   subscription OnCartItemUpdate {
@@ -64,7 +64,7 @@ export const CART_ITEM_SUBSCRIPTION = gql(`
       }
     }
   }
-`)
+`);
 
 export const REGISTER_VISITOR = gql(`
   mutation RegisterVisitor {
@@ -73,7 +73,7 @@ export const REGISTER_VISITOR = gql(`
         isActive
       }
     }
-`)
+`);
 
 export const ADD_ITEM = gql(`
   mutation AddItem($addItemArgs: AddItemArgs!) {
@@ -99,7 +99,7 @@ export const ADD_ITEM = gql(`
       updatedAt
     }
   }
-`)
+`);
 
 export const UPDATE_ITEM_QUANTITY = gql(`
   mutation UpdateItemQuantity($updateItemQuantityArgs: UpdateItemQuantityArgs!) {
@@ -125,7 +125,7 @@ export const UPDATE_ITEM_QUANTITY = gql(`
       updatedAt
     }
   }
-`)
+`);
 
 export const REMOVE_ITEM = gql(`
   mutation RemoveItem($removeItemArgs: RemoveItemArgs!) {
@@ -151,4 +151,4 @@ export const REMOVE_ITEM = gql(`
       updatedAt
     }
   }
-`)
+`);

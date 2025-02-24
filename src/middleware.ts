@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 
 import { BACKEND_URL } from './constants';
@@ -12,20 +12,19 @@ const apolloBackendClient = new ApolloClient({
 
 export async function middleware(request: NextRequest) {
   // Creating session cookie if there's no visitor token used for authentication
-  const response = NextResponse.next()
+  const response = NextResponse.next();
 
   if (!request.cookies.has('visitorToken')) {
-    const result = await apolloBackendClient
-      .mutate({
-        mutation: REGISTER_VISITOR,
-        fetchPolicy: 'no-cache',
-      })
+    const result = await apolloBackendClient.mutate({
+      mutation: REGISTER_VISITOR,
+      fetchPolicy: 'no-cache',
+    });
 
-    const visitor = result.data?.register
+    const visitor = result.data?.register;
     if (visitor && visitor.isActive) {
-      response.cookies.set('visitorToken', visitor.token)
+      response.cookies.set('visitorToken', visitor.token);
     }
   }
 
-  return response
+  return response;
 }

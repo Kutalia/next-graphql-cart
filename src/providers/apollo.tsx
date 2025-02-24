@@ -1,7 +1,13 @@
-"use client"
+'use client';
 
 import { BACKEND_URL } from '@/constants';
-import { ApolloClient, ApolloProvider, createHttpLink, InMemoryCache, split } from '@apollo/client';
+import {
+  ApolloClient,
+  ApolloProvider,
+  createHttpLink,
+  InMemoryCache,
+  split,
+} from '@apollo/client';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { setContext } from '@apollo/client/link/context';
 import { createClient } from 'graphql-ws';
@@ -10,45 +16,50 @@ import { useEffect, useState } from 'react';
 
 export const getVisitorTokenFromCookies = () => {
   const token = document.cookie
-    .split("; ")
-    .find((row) => row.startsWith("visitorToken="))
-    ?.split("=")[1];
+    .split('; ')
+    .find((row) => row.startsWith('visitorToken='))
+    ?.split('=')[1];
 
   if (token) {
-    return decodeURIComponent(token)
+    return decodeURIComponent(token);
   }
 
-  return null
-}
+  return null;
+};
 
 const httpLink = createHttpLink({
   uri: BACKEND_URL,
 });
 
 const authLink = setContext((_, { headers }) => {
-  const token = getVisitorTokenFromCookies()
+  const token = getVisitorTokenFromCookies();
 
   return {
     headers: {
       ...headers,
-      authorization: token ? `Bearer ${token}` : "",
-    }
-  }
+      authorization: token ? `Bearer ${token}` : '',
+    },
+  };
 });
 
-const httpLinkWithAuth = authLink.concat(httpLink)
+const httpLinkWithAuth = authLink.concat(httpLink);
 
-export const CustomApolloProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
-  const [client, setClient] = useState<ApolloClient<any>>()
+export const CustomApolloProvider: React.FC<React.PropsWithChildren> = ({
+  children,
+}) => {
+  /* eslint-disable  @typescript-eslint/no-explicit-any */
+  const [client, setClient] = useState<ApolloClient<any>>();
 
   useEffect(() => {
     // defining here since window context not available during prerendering, hence the token in cookie unavailable too
-    const wsLink = new GraphQLWsLink(createClient({
-      url: BACKEND_URL,
-      connectionParams: {
-        authToken: getVisitorTokenFromCookies(),
-      }
-    }))
+    const wsLink = new GraphQLWsLink(
+      createClient({
+        url: BACKEND_URL,
+        connectionParams: {
+          authToken: getVisitorTokenFromCookies(),
+        },
+      }),
+    );
 
     // The split function takes three parameters:
     //
@@ -67,17 +78,17 @@ export const CustomApolloProvider: React.FC<React.PropsWithChildren<{}>> = ({ ch
       httpLinkWithAuth,
     );
 
-    setClient(new ApolloClient({
-      link: splitLink,
-      cache: new InMemoryCache()
-    }))
-  }, [])
+    setClient(
+      new ApolloClient({
+        link: splitLink,
+        cache: new InMemoryCache(),
+      }),
+    );
+  }, []);
 
   if (!client) {
-    return
+    return;
   }
 
-  return <ApolloProvider client={client}>
-    {children}
-  </ApolloProvider>
-}
+  return <ApolloProvider client={client}>{children}</ApolloProvider>;
+};

@@ -1,6 +1,6 @@
-"use client"
+'use client';
 
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -9,82 +9,101 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import { cartAddItemSchema, cartUpdateItemQuantitySchema } from "@/lib/zod-schemas"
-import { ADD_ITEM, UPDATE_ITEM_QUANTITY } from "@/queries"
-import { TableProduct } from "@/types"
-import { useMutation } from "@apollo/client"
-import { useEffect, useRef, useState } from "react"
-import { toast } from "sonner"
-import { NumberInput } from "./number-input"
-import { parseError } from "@/lib/utils"
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import {
+  cartAddItemSchema,
+  cartUpdateItemQuantitySchema,
+} from '@/lib/zod-schemas';
+import { ADD_ITEM, UPDATE_ITEM_QUANTITY } from '@/queries';
+import { TableProduct } from '@/types';
+import { useMutation } from '@apollo/client';
+import { useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
+import { NumberInput } from './number-input';
+import { parseError } from '@/lib/utils';
 
 interface Props {
-  product: TableProduct
-  cartItemId?: string | undefined
+  product: TableProduct;
+  cartItemId?: string | undefined;
 }
 
 export function ModifyCartDialog({ product }: Props) {
-  const [quantity, setQuantity] = useState(product.quantity || 1)
-  const [isOpen, setIsOpen] = useState(false)
-  const inputRef = useRef<HTMLInputElement>(null)
-  const [error, setError] = useState(false)
+  const [quantity, setQuantity] = useState(product.quantity || 1);
+  const [isOpen, setIsOpen] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [error, setError] = useState(false);
 
   const [addItem] = useMutation(ADD_ITEM, {
     variables: { addItemArgs: { productId: product.productId, quantity } },
     onCompleted: (data) => {
-      console.log('ADD_ITEM_DATA', data)
-      setIsOpen(false)
-      toast('Product has been successfully added')
+      console.log('ADD_ITEM_DATA', data);
+      setIsOpen(false);
+      toast('Product has been successfully added');
     },
     onError: (error) => {
-      const errorMessage = parseError(error)
+      const errorMessage = parseError(error);
       if (errorMessage) {
-        toast(errorMessage)
+        toast(errorMessage);
       }
-    }
-  })
+    },
+  });
 
   const [updateItem] = useMutation(UPDATE_ITEM_QUANTITY, {
-    variables: { updateItemQuantityArgs: { cartItemId: product.cartItemId as string, quantity } },
+    variables: {
+      updateItemQuantityArgs: {
+        cartItemId: product.cartItemId as string,
+        quantity,
+      },
+    },
     onCompleted: (data) => {
-      console.log('UPDATE_ITEM_QUANTITY_DATA', data)
-      setIsOpen(false)
-      toast('Cart item quantity has been successfully updated')
+      console.log('UPDATE_ITEM_QUANTITY_DATA', data);
+      setIsOpen(false);
+      toast('Cart item quantity has been successfully updated');
     },
     onError: (error) => {
-      const errorMessage = parseError(error)
+      const errorMessage = parseError(error);
       if (errorMessage) {
-        toast(errorMessage)
+        toast(errorMessage);
       }
-    }
-  })
+    },
+  });
 
   useEffect(() => {
     if (!product.cartItemId) {
-      const output = cartAddItemSchema.safeParse({ productId: product.productId, quantity })
-      setError(!output.success)
+      const output = cartAddItemSchema.safeParse({
+        productId: product.productId,
+        quantity,
+      });
+      setError(!output.success);
     } else {
-      const output = cartUpdateItemQuantitySchema.safeParse({ cartItemId: product.cartItemId, quantity })
-      setError(!output.success)
+      const output = cartUpdateItemQuantitySchema.safeParse({
+        cartItemId: product.cartItemId,
+        quantity,
+      });
+      setError(!output.success);
     }
-  }, [quantity, product])
+  }, [quantity, product]);
 
   if (!product || !product.availableQuantity) {
-    return null
+    return null;
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger className="relative flex select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&>svg]:size-4 [&>svg]:shrink-0 w-full">
+      <DialogTrigger className="relative flex w-full select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&>svg]:size-4 [&>svg]:shrink-0">
         {!product.cartItemId ? 'Add to cart' : 'Edit cart quantity'}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{product.cartItemId ? 'Edit product in cart' : 'Add product to cart'}</DialogTitle>
+          <DialogTitle>
+            {product.cartItemId
+              ? 'Edit product in cart'
+              : 'Add product to cart'}
+          </DialogTitle>
           <DialogDescription>
-            Make changes to the product quantity in your cart. Click save when you're done.
+            Make changes to the product quantity in your cart. Click save when
+            you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
@@ -101,12 +120,21 @@ export function ModifyCartDialog({ product }: Props) {
               onValueChange={(val) => setQuantity(val || 0)}
             />
           </div>
-          {error && <p className="text-sm text-red-500">Can't save changes. Check item quantity</p>}
+          {error && (
+            <p className="text-sm text-red-500">
+              Can&apos;t save changes. Check item quantity
+            </p>
+          )}
         </div>
         <DialogFooter>
-          <Button onClick={() => product.cartItemId ? updateItem() : addItem()} disabled={error}>Save changes</Button>
+          <Button
+            onClick={() => (product.cartItemId ? updateItem() : addItem())}
+            disabled={error}
+          >
+            Save changes
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

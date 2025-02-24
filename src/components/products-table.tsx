@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import {
   ColumnDef,
@@ -11,20 +11,20 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table"
-import { ArrowUpDown, MoreHorizontal } from "lucide-react"
-import * as React from "react"
+} from '@tanstack/react-table';
+import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
+import * as React from 'react';
 
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -32,89 +32,99 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { ModifyCartDialog } from "./modify-cart-dialog"
-import { TableProduct } from "@/types"
-import { useMutation, useQuery } from "@apollo/client"
-import { GET_CART, GET_PRODUCTS, REMOVE_ITEM } from "@/queries"
-import { useEffect, useMemo } from "react"
-import { toast } from "sonner"
-import { parseError } from "@/lib/utils"
-import { cartRemoveItemSchema } from "@/lib/zod-schemas"
+} from '@/components/ui/table';
+import { ModifyCartDialog } from './modify-cart-dialog';
+import { TableProduct } from '@/types';
+import { useMutation, useQuery } from '@apollo/client';
+import { GET_CART, GET_PRODUCTS, REMOVE_ITEM } from '@/queries';
+import { useEffect, useMemo } from 'react';
+import { toast } from 'sonner';
+import { parseError } from '@/lib/utils';
+import { cartRemoveItemSchema } from '@/lib/zod-schemas';
 
 export const columns: ColumnDef<TableProduct>[] = [
   {
-    accessorKey: "title",
+    accessorKey: 'title',
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Name
           <ArrowUpDown />
         </Button>
-      )
+      );
     },
-    cell: ({ row }) => <div>{row.getValue("title")}</div>,
+    cell: ({ row }) => <div>{row.getValue('title')}</div>,
   },
   {
-    accessorKey: "cost",
+    accessorKey: 'cost',
     header: () => <div className="text-right">Cost</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("cost"))
+      const amount = parseFloat(row.getValue('cost'));
 
       // Format the amount as a dollar amount
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount)
+      const formatted = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+      }).format(amount);
 
-      return <div className="text-right font-medium">{formatted}</div>
+      return <div className="text-right font-medium">{formatted}</div>;
     },
   },
   {
-    accessorKey: "availableQuantity",
+    accessorKey: 'availableQuantity',
     header: () => <div className="text-right">In Stock</div>,
     cell: ({ row }) => {
-      return <div className="text-right font-medium">{row.getValue("availableQuantity")}</div>
+      return (
+        <div className="text-right font-medium">
+          {row.getValue('availableQuantity')}
+        </div>
+      );
     },
   },
   {
-    accessorKey: "quantity",
+    accessorKey: 'quantity',
     header: () => <div className="text-right">In Cart</div>,
     cell: ({ row }) => {
-      return <div className="text-right font-medium">{row.getValue("quantity")}</div>
+      return (
+        <div className="text-right font-medium">{row.getValue('quantity')}</div>
+      );
     },
   },
   {
-    id: "actions",
+    id: 'actions',
     enableHiding: false,
-    cell: ({ row }) => {
-      const product = row.original
+    cell: function CellComp({ row }) {
+      const product = row.original;
 
       const [removeItem] = useMutation(REMOVE_ITEM, {
-        variables: { removeItemArgs: { cartItemId: row.original.cartItemId as string } },
+        variables: {
+          removeItemArgs: { cartItemId: row.original.cartItemId as string },
+        },
         onCompleted: (data) => {
-          console.log('REMOVE_ITEM_DATA', data)
-          toast('Product has been successfully removed from your cart')
+          console.log('REMOVE_ITEM_DATA', data);
+          toast('Product has been successfully removed from your cart');
         },
         onError: (error) => {
-          const errorMessage = parseError(error)
+          const errorMessage = parseError(error);
           if (errorMessage) {
-            toast(errorMessage)
+            toast(errorMessage);
           }
-        }
-      })
+        },
+      });
 
       const handleRemoveItem = () => {
-        const output = cartRemoveItemSchema.safeParse({ cartItemId: row.original.cartItemId })
+        const output = cartRemoveItemSchema.safeParse({
+          cartItemId: row.original.cartItemId,
+        });
         if (!output.success) {
-          toast('Incorrect cart id')
+          toast('Incorrect cart id');
         } else {
-          removeItem()
+          removeItem();
         }
-      }
+      };
 
       return (
         <DropdownMenu>
@@ -133,33 +143,35 @@ export const columns: ColumnDef<TableProduct>[] = [
               Copy product ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild><ModifyCartDialog product={product} /></DropdownMenuItem>
-            {
-              product.cartItemId && <DropdownMenuItem onClick={handleRemoveItem}>
+            <DropdownMenuItem asChild>
+              <ModifyCartDialog product={product} />
+            </DropdownMenuItem>
+            {product.cartItemId && (
+              <DropdownMenuItem onClick={handleRemoveItem}>
                 Remove from cart
               </DropdownMenuItem>
-            }
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
-      )
+      );
     },
   },
-]
+];
 
 interface Props {
-  sortByInCart?: boolean
+  sortByInCart?: boolean;
 }
 
 export function ProductsTable({ sortByInCart }: Props) {
-  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
+    [],
+  );
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
+    React.useState<VisibilityState>({});
 
   // Using apollo as a state management tool in this case, given that products should be already fetched
-  const { loading: productsLoading, data: productsData } = useQuery(GET_PRODUCTS, {
+  const { data: productsData } = useQuery(GET_PRODUCTS, {
     fetchPolicy: 'cache-only',
   });
 
@@ -169,24 +181,33 @@ export function ProductsTable({ sortByInCart }: Props) {
   });
 
   const data = useMemo(() => {
-    const products = productsData?.getProducts?.products
-    const cartItems = cartData?.getCart?.items
+    const products = productsData?.getProducts?.products;
+    const cartItems = cartData?.getCart?.items;
 
-    let mergedData: Array<TableProduct> = []
+    let mergedData: Array<TableProduct> = [];
 
     if (!products) {
-      return mergedData
+      return mergedData;
     }
 
-    mergedData = products.map(({ _id: productId, title, cost, availableQuantity }) => ({ productId, title, cost, availableQuantity }))
+    mergedData = products.map(
+      ({ _id: productId, title, cost, availableQuantity }) => ({
+        productId,
+        title,
+        cost,
+        availableQuantity,
+      }),
+    );
 
-    cartItems?.forEach(({ _id: cartItemId, quantity, product: { _id: productId } }) => {
-      const index = products.findIndex(({ _id }) => _id === productId)
-      mergedData[index] = { ...mergedData[index], quantity, cartItemId }
-    })
+    cartItems?.forEach(
+      ({ _id: cartItemId, quantity, product: { _id: productId } }) => {
+        const index = products.findIndex(({ _id }) => _id === productId);
+        mergedData[index] = { ...mergedData[index], quantity, cartItemId };
+      },
+    );
 
-    return mergedData
-  }, [productsData, cartData])
+    return mergedData;
+  }, [productsData, cartData]);
 
   const table = useReactTable({
     data,
@@ -208,25 +229,27 @@ export function ProductsTable({ sortByInCart }: Props) {
         pageIndex: 0,
         pageSize: 5,
       },
-    }
-  })
+    },
+  });
 
   useEffect(() => {
     if (sortByInCart) {
-      table.getColumn('quantity')?.toggleSorting(table.getColumn('quantity')?.getIsSorted() === "asc")
+      table
+        .getColumn('quantity')
+        ?.toggleSorting(table.getColumn('quantity')?.getIsSorted() === 'asc');
     } else {
-      table.resetSorting()
+      table.resetSorting();
     }
-  }, [sortByInCart])
+  }, [sortByInCart, table]);
 
   return (
     <div className="w-full">
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter products..."
-          value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn('title')?.getFilterValue() as string) ?? ''}
           onChange={(event) =>
-            table.getColumn("title")?.setFilterValue(event.target.value)
+            table.getColumn('title')?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
@@ -242,11 +265,11 @@ export function ProductsTable({ sortByInCart }: Props) {
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
@@ -254,14 +277,12 @@ export function ProductsTable({ sortByInCart }: Props) {
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                >
+                <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}
@@ -301,5 +322,5 @@ export function ProductsTable({ sortByInCart }: Props) {
         </div>
       </div>
     </div>
-  )
+  );
 }
