@@ -10,14 +10,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { cartAddItemSchema } from "@/lib/zod-schemas"
 import { ADD_ITEM, GET_PRODUCTS } from "@/queries"
-import { Product } from "@/types"
 import { useMutation, useQuery } from "@apollo/client"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { NumberInput } from "./number-input"
-import { cartAddItemSchema } from "@/lib/zod-schemas"
+import { toast } from "sonner"
 
 interface Props {
   productId: string
@@ -40,6 +39,7 @@ export function ModifyCartDialog({ productId, isCartEdit }: Props) {
     onCompleted: (data) => {
       console.log('ADD_ITEM_DATA', data)
       setIsOpen(false)
+      toast('Product has been successfully added')
     }
   })
 

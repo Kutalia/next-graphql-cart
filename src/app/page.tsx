@@ -4,6 +4,7 @@ import { CartItemEvent } from "@/__generated__/graphql";
 import { NotificationDrawer } from "@/components/notification-drawer";
 import { ProductsTable } from "@/components/products-table";
 import { SkeletonTable } from "@/components/skeleton-table";
+import { Toaster } from "@/components/ui/sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CART_ITEM_SUBSCRIPTION, GET_CART, GET_PRODUCTS } from "@/queries";
 import { useQuery, useSubscription } from "@apollo/client";
@@ -123,6 +124,8 @@ export default function Home() {
       <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
         Made by Kote Kutalia &#169; {(new Date()).getFullYear()}
       </footer>
+
+      <Toaster />
     </div>
   );
 }
