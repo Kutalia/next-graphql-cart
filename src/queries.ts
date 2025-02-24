@@ -100,3 +100,29 @@ export const ADD_ITEM = gql(`
     }
   }
 `)
+
+export const UPDATE_ITEM_QUANTITY = gql(`
+  mutation UpdateItemQuantity($updateItemQuantityArgs: UpdateItemQuantityArgs!) {
+    updateItemQuantity(input: $updateItemQuantityArgs) {
+      _id
+      items {
+        _id
+        cartId
+        product {
+          _id
+          title
+          cost
+          availableQuantity
+          isArchived
+          createdAt
+          updatedAt
+        }
+        quantity
+        updatedAt
+        addedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`)
