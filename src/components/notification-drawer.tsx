@@ -31,7 +31,7 @@ export function NotificationDrawer({ cartItemUpdate }: Props) {
   return <Drawer open={isOpen} onOpenChange={setIsOpen} dismissible={false}>
     <DrawerContent>
       <DrawerHeader>
-        <DrawerTitle>Cart data has been updated</DrawerTitle>
+        <DrawerTitle>Item availibility data has been updated</DrawerTitle>
         <DrawerDescription>
           "{cartItemUpdate?.payload?.product?.title}" has been updated
           <br />
